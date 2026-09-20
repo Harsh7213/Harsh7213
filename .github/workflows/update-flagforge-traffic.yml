@@ -1,4 +1,4 @@
-  name: Update FlagForge traffic
+name: Update FlagForge traffic
 
 on:
   schedule:
