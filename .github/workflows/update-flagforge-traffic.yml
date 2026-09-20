@@ -81,7 +81,7 @@ jobs:
 
           history["updated_at"] = datetime.now(
               timezone.utc
-          ).isoformat()
+          ).strftime("%Y-%m-%d %H:%M UTC")
 
           history_file.write_text(
               json.dumps(history, indent=2) + "\n"
