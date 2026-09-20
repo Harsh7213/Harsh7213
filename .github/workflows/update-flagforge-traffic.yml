@@ -1,9 +1,9 @@
 name: Update FlagForge traffic
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "15 0 * * *"
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,69 +16,111 @@ jobs:
       - name: Checkout profile repository
         uses: actions/checkout@v4
 
-      - name: Get FlagForge traffic
+      - name: Collect historical traffic
         env:
           GH_TOKEN: ${{ secrets.PROFILE_REPO_TOKEN }}
         run: |
           mkdir -p data
 
           gh api repos/Harsh7213/flagforge/traffic/views \
-            > data/views.json
+            > /tmp/views.json
 
           gh api repos/Harsh7213/flagforge/traffic/clones \
-            > data/clones.json
+            > /tmp/clones.json
 
-      - name: Update profile README
-        run: |
           python - <<'PY'
           import json
           from pathlib import Path
+          from datetime import datetime, timezone
 
-          views = json.loads(Path("data/views.json").read_text())
-          clones = json.loads(Path("data/clones.json").read_text())
+          history_file = Path("data/flagforge-traffic.json")
+
+          if history_file.exists():
+              history = json.loads(history_file.read_text())
+          else:
+              history = {
+                  "repository": "Harsh7213/flagforge",
+                  "views": {},
+                  "clones": {}
+              }
+
+          history.setdefault("views", {})
+          history.setdefault("clones", {})
+
+          views_data = json.loads(Path("/tmp/views.json").read_text())
+          clones_data = json.loads(Path("/tmp/clones.json").read_text())
+
+          for item in views_data.get("views", []):
+              timestamp = item["timestamp"]
+
+              history["views"][timestamp] = {
+                  "count": item["count"],
+                  "uniques": item["uniques"]
+              }
+
+          for item in clones_data.get("clones", []):
+              timestamp = item["timestamp"]
+
+              history["clones"][timestamp] = {
+                  "count": item["count"],
+                  "uniques": item["uniques"]
+              }
 
           total_views = sum(
-              item["count"] for item in views.get("views", [])
+              item["count"] for item in history["views"].values()
           )
 
           total_clones = sum(
-              item["count"] for item in clones.get("clones", [])
+              item["count"] for item in history["clones"].values()
+          )
+
+          history["totals"] = {
+              "views": total_views,
+              "clones": total_clones
+          }
+
+          history["updated_at"] = datetime.now(
+              timezone.utc
+          ).isoformat()
+
+          history_file.write_text(
+              json.dumps(history, indent=2) + "\n"
           )
 
           readme = Path("README.md")
+          content = readme.read_text() if readme.exists() else ""
 
-          if readme.exists():
-              content = readme.read_text()
-          else:
-              content = "# Harsh7213\n"
-
-          start = "<!-- FLAGFORGE_STATS_START -->"
-          end = "<!-- FLAGFORGE_STATS_END -->"
+          start_marker = "<!-- FLAGFORGE_STATS_START -->"
+          end_marker = "<!-- FLAGFORGE_STATS_END -->"
 
           section = f"""\
-          {start}
+          {start_marker}
+          ## FlagForge historical traffic
+
           - Total views: **{total_views}**
           - Total clones: **{total_clones}**
+          - Last updated: **{history["updated_at"]}**
 
-          {end}
+          {end_marker}
           """
 
-          if start in content and end in content:
-              before = content.split(start)[0]
-              after = content.split(end, 1)[1]
-              content = before + section + after
+          if start_marker in content and end_marker in content:
+              start = content.index(start_marker)
+              end = content.index(end_marker) + len(end_marker)
+              content = content[:start] + section.strip() + content[end:]
           else:
               content = content.rstrip() + "\n\n" + section
 
           readme.write_text(content)
           PY
 
-      - name: Commit profile changes
+      - name: Commit historical data and profile update
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add README.md data/
-          git commit -m "Update FlagForge traffic statistics" || exit 0
-          git push
+          git add README.md data/flagforge-traffic.json
 
+          git commit -m "Update historical FlagForge traffic" || exit 0
+
+          git push:workflow_dispatch
