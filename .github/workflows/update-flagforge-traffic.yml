@@ -123,4 +123,4 @@ jobs:
 
           git commit -m "Update historical FlagForge traffic" || exit 0
 
-          git push:workflow_dispatch
+          git push origin HEAD:main 
