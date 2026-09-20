@@ -13,9 +13,12 @@ FlagForge is one of my GitHub projects.
 ## FlagForge traffic
 
 <!-- FLAGFORGE_STATS_START -->
+## FlagForge historical traffic
+
 - Total views: **0**
-- Total clones: **0**
-- Last updated: **Not yet updated**
+- Total clones: **23**
+- Last updated: **2026-09-20T12:20:32.407947+00:00**
+
 <!-- FLAGFORGE_STATS_END -->
 
 ## Technologies
