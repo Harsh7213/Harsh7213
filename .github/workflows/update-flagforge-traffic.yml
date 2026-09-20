@@ -1,0 +1,84 @@
+  name: Update FlagForge traffic
+
+on:
+  schedule:
+    - cron: "15 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-traffic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+
+      - name: Get FlagForge traffic
+        env:
+          GH_TOKEN: ${{ secrets.PROFILE_REPO_TOKEN }}
+        run: |
+          mkdir -p data
+
+          gh api repos/Harsh7213/flagforge/traffic/views \
+            > data/views.json
+
+          gh api repos/Harsh7213/flagforge/traffic/clones \
+            > data/clones.json
+
+      - name: Update profile README
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          views = json.loads(Path("data/views.json").read_text())
+          clones = json.loads(Path("data/clones.json").read_text())
+
+          total_views = sum(
+              item["count"] for item in views.get("views", [])
+          )
+
+          total_clones = sum(
+              item["count"] for item in clones.get("clones", [])
+          )
+
+          readme = Path("README.md")
+
+          if readme.exists():
+              content = readme.read_text()
+          else:
+              content = "# Harsh7213\n"
+
+          start = "<!-- FLAGFORGE_STATS_START -->"
+          end = "<!-- FLAGFORGE_STATS_END -->"
+
+          section = f"""\
+          {start}
+          - Total views: **{total_views}**
+          - Total clones: **{total_clones}**
+
+          {end}
+          """
+
+          if start in content and end in content:
+              before = content.split(start)[0]
+              after = content.split(end, 1)[1]
+              content = before + section + after
+          else:
+              content = content.rstrip() + "\n\n" + section
+
+          readme.write_text(content)
+          PY
+
+      - name: Commit profile changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md data/
+          git commit -m "Update FlagForge traffic statistics" || exit 0
+          git push
+
