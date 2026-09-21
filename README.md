@@ -4,7 +4,7 @@ Welcome to my GitHub profile.
 
 ## Projects
 
-[FlagForge](https://github.com/Harsh7213/flagforge)
+[FlagForge](https://github.com/Harsh7213/flagforge) - Feature Flag Management System
 
 <!-- FLAGFORGE_STATS_START -->
 ## FlagForge historical traffic
