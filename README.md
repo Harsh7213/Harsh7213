@@ -4,13 +4,7 @@ Welcome to my GitHub profile.
 
 ## Projects
 
-### FlagForge
-
-FlagForge is one of my GitHub projects.
-
-[View the FlagForge repository](https://github.com/Harsh7213/flagforge)
-
-## FlagForge traffic
+[FlagForge](https://github.com/Harsh7213/flagforge)
 
 <!-- FLAGFORGE_STATS_START -->
 ## FlagForge historical traffic
@@ -21,10 +15,16 @@ FlagForge is one of my GitHub projects.
 
 <!-- FLAGFORGE_STATS_END -->
 
-## Technologies
+## Skills
 
-- JavaScript
+- JavaScript / TypeScript
 - Node.js
 - React
+- Next.js
+- TailWind CSS
+- Java
 - Git
-- GitHub
+- PostgreSQL
+- MongoDB
+- AWS (EC2, S3)
+- Docker
