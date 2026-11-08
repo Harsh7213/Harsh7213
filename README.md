@@ -3,19 +3,15 @@ Welcome to my GitHub profile.
 
 ![Profile view counter on GitHub](https://komarev.com/ghpvc/?username=Harsh7213)
 ---
-### Projects
+### projects
 
-[FlagForge](https://github.com/Harsh7213/flagforge) - Feature Flag Management System
+[flagforge](https://github.com/harsh7213/flagforge) - feature flag management system
+[shorty](https://github.com/harsh7213/shorty) - URL Shortner
 
 ---
-<!-- FLAGFORGE_STATS_START -->
-## FlagForge historical traffic
+[![leetcode stats](https://leetcode-stats-six.vercel.app/Harsh2700)](https://leetcode.com/u/harsh2700)
 
-- Total views: **2**
-- Total clones: **300**
-- Last updated: **2026-11-08 05:54 UTC**
-
-<!-- FLAGFORGE_STATS_END -->
+![Harsh GitHub stats](https://github-stats-extended.vercel.app/api?username=Harsh7213)
 
 ---
 ### Skills
