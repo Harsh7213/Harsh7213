@@ -24,7 +24,7 @@ Welcome to my GitHub profile.
 
 ---
 ### Skills
-![My Skills](https://skillicons.dev/icons?i=html,css,js,ts,java,go,py,tailwind,react,nextjs,aws,mongodb,postgres,docker,express,git,vim)
+![My Skills](https://skillicons.dev/icons?i=html,css,js,ts,go,py,tailwind,react,nextjs,aws,mongodb,postgres,docker,express,git,vim)
 
 ---
 ### Connect with me
